@@ -4,8 +4,6 @@ const path = require('path');
 const cors = require("cors")
 const fs = require("fs");
 const app = express()
-const { connection } = require("./db");
-const { QrModel } = require('./model');
 
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -21,16 +19,7 @@ app.get("/generate", async (req, res) => {
     }
     let data = generateNumber()
     let stJson = JSON.stringify(data.number)
-    let check = await QrModel.find({ "number": stJson })
-    if (check.length > 0) {
-        res.send("This number is already present")
-    } else {
-        const timestamp = Date.now()
-        const date = new Date(timestamp);
-        let Ddate = `${date.toLocaleTimeString()} ${date.toDateString()}`
-        const data = new QrModel({ "number": +stJson, "timestamp": Ddate })
-        await data.save()
-        console.log("saved in db")
+    
         qr.toFile("qr.png", stJson, function (err) {
             if (err) {
                 console.log("Error generating QR code:", err);
@@ -47,7 +36,7 @@ app.get("/generate", async (req, res) => {
                 res.end(fileData);
             });
         });
-    }
+    
 })
 
 
@@ -55,16 +44,7 @@ app.post("/numbered/:id", async (req, res) => {
     try {
         let nums = +req.params.id;
         const stJson = JSON.stringify(nums);
-        let check = await QrModel.find({ "number": stJson })
-        if (check.length > 0) {
-            res.send("This number is already present")
-        } else {
-            const timestamp = Date.now()
-            const date = new Date(timestamp);
-            let Ddate = `${date.toLocaleTimeString()} ${date.toDateString()}`
-            const data = new QrModel({ "number": +stJson, "timestamp": Ddate })
-            await data.save()
-            console.log("saved in db")
+       
             qr.toFile("qr.png", stJson, function (err) {
                 if (err) {
                     console.log("Error generating QR code:", err);
@@ -81,7 +61,7 @@ app.post("/numbered/:id", async (req, res) => {
                     res.send(fileData);
                 });
             });
-        }
+        
     } catch (error) {
         console.error('Error:', error);
         res.status(500).send("An error occurred");
@@ -90,9 +70,7 @@ app.post("/numbered/:id", async (req, res) => {
 
 app.listen(3030, async () => {
     try {
-        await connection
         console.log("Server is running on port no 3030")
-        console.log("Connected to DB")
     } catch (error) {
         console.log(error);
     }
