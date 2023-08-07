@@ -10,7 +10,7 @@ const { connection } = require("./db")
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(cors({
-    origin: 'http://localhost:3000', // Allow requests only from this origin
+    origin: '*', // Allow requests only from this origin
     optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
 }));
 
