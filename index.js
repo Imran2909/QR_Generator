@@ -12,8 +12,8 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(cors({
     origin: 'http://localhost:3000', // Allow requests only from this origin
     optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
-}));
-
+  }));
+  
 app.get("/", (req, res) => {
     res.send("Home page")
 })
